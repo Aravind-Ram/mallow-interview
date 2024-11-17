@@ -25,10 +25,7 @@ const Login: React.FC = () => {
     } = theme.useToken();
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-
         if (process.env.REACT_APP_AUTH_EMAIL === values.email && process.env.REACT_APP_AUTH_PASSWORD === values.password) {
-
-
             axiosInstance.post("/auth/login", values)
                 .then(res => {
                     auth.signin(res.data, () => {
