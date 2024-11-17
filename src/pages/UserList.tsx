@@ -9,35 +9,11 @@ import UserForm from "../components/UserForm";
 import { IUser } from "../interfaces/IUser";
 import DeleteAction from "../components/DeleteAction";
 import Pagination from "../components/Pagination";
+import Search from "../components/Search";
 
 type SearchProps = GetProps<typeof Input.Search>;
 
 const UserList: React.FC = () => {
-
-    const {
-        token: { borderRadiusLG, colorBgContainer },
-    } = theme.useToken();
-
-    const [users, setUsers] = useState<IUser.UserCollection>();
-
-    const [selectedUser, setSelectedUser] = useState<IUser.User | null>(null);
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const editUser = (user: IUser.User) => {
-        setSelectedUser(user);
-        setIsModalOpen(true);
-    }
-
-    const deleteUser = (user: IUser.User) => {
-        axiosInstance.delete(`/users/${user?.id}`)
-            .then(res => {
-                loadUsers(users?.page ?? 1);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }
 
     const columns = [
         {
@@ -72,14 +48,40 @@ const UserList: React.FC = () => {
         },
     ];
 
+    const {
+        token: { borderRadiusLG, colorBgContainer },
+    } = theme.useToken();
+
+    const [users, setUsers] = useState<IUser.UserCollection>();
+
+    const [selectedUser, setSelectedUser] = useState<IUser.User | null>(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     useEffect(() => {
         loadUsers(1)
     }, []);
 
+    const editUser = (user: IUser.User) => {
+        setSelectedUser(user);
+        setIsModalOpen(true);
+    }
+
+    const deleteUser = (user: IUser.User) => {
+        axiosInstance.delete(`/users/${user?.id}`)
+            .then(res => {
+                loadUsers(users?.page ?? 1);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+
     const loadUsers = useCallback((page: number) => {
         axiosInstance.get("/users?page=" + page)
             .then(res => {
-                setUsers(res.data);
+                let userCollection = { ...res.data, users: res.data.data };
+                setUsers(userCollection);
             })
             .catch(err => {
                 console.error(err);
@@ -116,7 +118,12 @@ const UserList: React.FC = () => {
             });
     }, [selectedUser])
 
-    const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
+    const filterUsers = (query: string) => {
+        const filtered: IUser.User[] = users?.data?.filter((user) =>
+            user.first_name.toLowerCase().includes(query.toLowerCase()) || user.last_name.toLowerCase().includes(query.toLowerCase())
+        ) ?? [];
+        (!filtered) ? setUsers({...users, users: users?.data}) : setUsers({...users, users: filtered})        
+    };
 
     return <Layout style={{ height: "100vh" }}>
         <Layout.Header style={{ display: 'flex', alignItems: 'center' }}>
@@ -135,7 +142,7 @@ const UserList: React.FC = () => {
                     <Flex vertical={false} justify={'space-between'} align={'center'}>
                         <Typography.Paragraph strong>Users</Typography.Paragraph>
                         <Col>
-                            <Input.Search placeholder="Search user" allowClear onSearch={onSearch} style={{ width: 200 }} />
+                            <Search handleFilter={filterUsers} />
                             <Button type="primary" style={{ marginLeft: "1rem" }} onClick={createUser}>Create User</Button>
                         </Col>
                     </Flex>
@@ -144,9 +151,9 @@ const UserList: React.FC = () => {
                         <Button color="default" variant="outlined" icon={<UnorderedListOutlined />}>Card</Button>
                     </Flex>
                 </Flex>
-                <Table dataSource={users?.data} columns={columns} rowKey="id" pagination={false} />
+                <Table dataSource={users?.users} columns={columns} rowKey="id" pagination={false} />
                 {
-                    users && users?.data.length > 0 ? <Flex justify="center" style={{ marginTop: "1rem" }}>
+                    users && users?.data && users?.data.length > 0 ? <Flex justify="center" style={{ marginTop: "1rem" }}>
                         <Flex vertical={false} justify={'center'} align={'center'}>
                             <Pagination perPage={users?.per_page} current={users?.page} total={users?.total} onPageSwitch={loadUsers} />
                         </Flex>

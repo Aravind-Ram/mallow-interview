@@ -6,12 +6,13 @@ export namespace IUser {
     }
 
     export interface UserCollection {
-        page: number,
-        per_page: number,
-        total: number,
-        total_pages: number,
-        data: User[],
-        support: any
+        page?: number,
+        per_page?: number,
+        total?: number,
+        total_pages?: number,
+        users?: User[], 
+        data?: User[],
+        support?: any
     }
 
     export interface UserFormProps {
