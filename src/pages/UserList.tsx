@@ -10,6 +10,8 @@ import { IUser } from "../interfaces/IUser";
 import DeleteAction from "../components/DeleteAction";
 import Pagination from "../components/Pagination";
 import Search from "../components/Search";
+import UserCardSection from "../features/UserCardSection";
+import EditAction from "../components/EditAction";
 
 type SearchProps = GetProps<typeof Input.Search>;
 
@@ -42,7 +44,7 @@ const UserList: React.FC = () => {
             dataIndex: '',
             key: 'action',
             render: (record: IUser.User) => <>
-                <Button color="primary" variant="solid" onClick={(e) => editUser(record)}>Edit</Button>
+                <EditAction user={record} handleAction={editUser} />
                 <DeleteAction user={record} handleAction={deleteUser} />
             </>,
         },
@@ -52,7 +54,9 @@ const UserList: React.FC = () => {
         token: { borderRadiusLG, colorBgContainer },
     } = theme.useToken();
 
-    const [users, setUsers] = useState<IUser.UserCollection>();
+    const [view, setView] = useState<string>('table');
+
+    const [users, setUsers] = useState<IUser.UserCollection>({});
 
     const [selectedUser, setSelectedUser] = useState<IUser.User | null>(null);
 
@@ -122,7 +126,7 @@ const UserList: React.FC = () => {
         const filtered: IUser.User[] = users?.data?.filter((user) =>
             user.first_name.toLowerCase().includes(query.toLowerCase()) || user.last_name.toLowerCase().includes(query.toLowerCase())
         ) ?? [];
-        (!filtered) ? setUsers({...users, users: users?.data}) : setUsers({...users, users: filtered})        
+        (!filtered) ? setUsers({ ...users, users: users?.data }) : setUsers({ ...users, users: filtered })
     };
 
     return <Layout style={{ height: "100vh" }}>
@@ -138,7 +142,7 @@ const UserList: React.FC = () => {
                     borderRadius: borderRadiusLG,
                 }}
             >
-                <Flex align="space-between" vertical>
+                <Flex align="space-between" vertical style={{ marginBottom: '1rem' }}>
                     <Flex vertical={false} justify={'space-between'} align={'center'}>
                         <Typography.Paragraph strong>Users</Typography.Paragraph>
                         <Col>
@@ -147,11 +151,14 @@ const UserList: React.FC = () => {
                         </Col>
                     </Flex>
                     <Flex vertical={false} justify={'flex-start'} align={'center'}>
-                        <Button color="primary" variant="outlined" icon={<TableOutlined />}>Table</Button>
-                        <Button color="default" variant="outlined" icon={<UnorderedListOutlined />}>Card</Button>
+                        <Button color={view === 'table' ? 'primary' : 'default'} variant="outlined" icon={<TableOutlined />} onClick={() => setView('table')}>Table</Button>
+                        <Button color={view === 'card' ? 'primary' : 'default'} variant="outlined" icon={<UnorderedListOutlined />} onClick={() => setView('card')}>Card</Button>
                     </Flex>
                 </Flex>
-                <Table dataSource={users?.users} columns={columns} rowKey="id" pagination={false} />
+                {
+                    view === 'table' ? <Table dataSource={users?.users} columns={columns} rowKey="id" pagination={false} /> :
+                        <UserCardSection collection={users} editAction={editUser} deleteAction={deleteUser} />
+                }
                 {
                     users && users?.data && users?.data.length > 0 ? <Flex justify="center" style={{ marginTop: "1rem" }}>
                         <Flex vertical={false} justify={'center'} align={'center'}>
