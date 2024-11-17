@@ -17,7 +17,6 @@ const Search: React.FC<{ handleFilter: any }> = ({ handleFilter }) => {
 
     useEffect(() => {
         if (debouncedQuery) {
-            console.log("API Call with query:", debouncedQuery);
             handleFilter(debouncedQuery);
         }
     }, [debouncedQuery]);

@@ -7,13 +7,13 @@ import EditAction from './EditAction';
 
 const { Meta } = Card;
 
-interface CardProp {
+interface Prop {
     user: IUser.User,
     editAction: any,
     deleteAction: any,
 }
 
-const UserCard: React.FC<CardProp> = ({user, editAction, deleteAction}) => (
+const UserCard: React.FC<Prop> = ({user, editAction, deleteAction}) => (
     <Card
         style={{ margin: '10px' }}
         cover={

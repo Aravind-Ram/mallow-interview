@@ -3,13 +3,13 @@ import { IUser } from "../interfaces/IUser"
 import UserCard from "../components/UserCard"
 import { Flex, Button, Row, Col } from "antd"
 
-interface UserCardProp{
+interface Prop{
     collection: IUser.UserCollection,
     deleteAction: any,
     editAction: any
 }
 
-const UserCardSection: React.FC<UserCardProp> = ({collection, editAction, deleteAction}) => {
+const UserCardSection: React.FC<Prop> = ({collection, editAction, deleteAction}) => {
 
     return <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         {

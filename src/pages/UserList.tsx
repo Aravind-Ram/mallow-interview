@@ -1,54 +1,16 @@
-import { Table, theme, Layout, Flex, Typography, Col, Input, Button, Avatar, Modal } from "antd";
-import { TableOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { theme, Layout, Flex, Modal } from "antd";
 import { Content } from "antd/es/layout/layout";
 import React, { useCallback, useEffect, useState } from "react"
-import type { GetProps } from 'antd';
 import AuthStatus from "../components/AuthStatus";
 import axiosInstance from "../axios";
 import UserForm from "../components/UserForm";
 import { IUser } from "../interfaces/IUser";
-import DeleteAction from "../components/DeleteAction";
 import Pagination from "../components/Pagination";
-import Search from "../components/Search";
 import UserCardSection from "../features/UserCardSection";
-import EditAction from "../components/EditAction";
-
-type SearchProps = GetProps<typeof Input.Search>;
+import UserTableSection from "../features/UserTableSection";
+import UserHead from "../components/UserHead";
 
 const UserList: React.FC = () => {
-
-    const columns = [
-        {
-            title: 'Avatar',
-            dataIndex: 'avatar',
-            key: 'avatar',
-            render: (text: string) => <><Avatar size={64} src={text} /></>,
-        },
-        {
-            title: 'Email address',
-            dataIndex: 'email',
-            key: 'email',
-        },
-        {
-            title: 'First Name',
-            dataIndex: 'first_name',
-            key: 'first_name',
-        },
-        {
-            title: 'Last Name',
-            dataIndex: 'last_name',
-            key: 'last_name',
-        },
-        {
-            title: 'Action',
-            dataIndex: '',
-            key: 'action',
-            render: (record: IUser.User) => <>
-                <EditAction user={record} handleAction={editUser} />
-                <DeleteAction user={record} handleAction={deleteUser} />
-            </>,
-        },
-    ];
 
     const {
         token: { borderRadiusLG, colorBgContainer },
@@ -123,11 +85,19 @@ const UserList: React.FC = () => {
     }, [selectedUser])
 
     const filterUsers = (query: string) => {
-        const filtered: IUser.User[] = users?.data?.filter((user) =>
-            user.first_name.toLowerCase().includes(query.toLowerCase()) || user.last_name.toLowerCase().includes(query.toLowerCase())
-        ) ?? [];
-        (!filtered) ? setUsers({ ...users, users: users?.data }) : setUsers({ ...users, users: filtered })
+        if(query.length <= 2) {
+            setUsers({ ...users, users: users?.data });
+        } else {
+            const filtered: IUser.User[] = users?.data?.filter((user) =>
+                user.first_name.toLowerCase().includes(query.toLowerCase()) || user.last_name.toLowerCase().includes(query.toLowerCase())
+            ) ?? [];
+            setUsers({ ...users, users: filtered })
+        }
     };
+
+    const toggleView = (mode: string) => {
+        setView(mode);
+    }
 
     return <Layout style={{ height: "100vh" }}>
         <Layout.Header style={{ display: 'flex', alignItems: 'center' }}>
@@ -142,25 +112,13 @@ const UserList: React.FC = () => {
                     borderRadius: borderRadiusLG,
                 }}
             >
-                <Flex align="space-between" vertical style={{ marginBottom: '1rem' }}>
-                    <Flex vertical={false} justify={'space-between'} align={'center'}>
-                        <Typography.Paragraph strong>Users</Typography.Paragraph>
-                        <Col>
-                            <Search handleFilter={filterUsers} />
-                            <Button type="primary" style={{ marginLeft: "1rem" }} onClick={createUser}>Create User</Button>
-                        </Col>
-                    </Flex>
-                    <Flex vertical={false} justify={'flex-start'} align={'center'}>
-                        <Button color={view === 'table' ? 'primary' : 'default'} variant="outlined" icon={<TableOutlined />} onClick={() => setView('table')}>Table</Button>
-                        <Button color={view === 'card' ? 'primary' : 'default'} variant="outlined" icon={<UnorderedListOutlined />} onClick={() => setView('card')}>Card</Button>
-                    </Flex>
-                </Flex>
+                <UserHead filterUsers={filterUsers} view={view} createUser={createUser} toggleView={toggleView} />
                 {
-                    view === 'table' ? <Table dataSource={users?.users} columns={columns} rowKey="id" pagination={false} /> :
+                    view === 'table' ? <UserTableSection collection={users} editAction={editUser} deleteAction={deleteUser} /> :
                         <UserCardSection collection={users} editAction={editUser} deleteAction={deleteUser} />
                 }
                 {
-                    users && users?.data && users?.data.length > 0 ? <Flex justify="center" style={{ marginTop: "1rem" }}>
+                    (users && users?.data && users?.data.length > 0) ? <Flex justify="center" style={{ marginTop: "1rem" }}>
                         <Flex vertical={false} justify={'center'} align={'center'}>
                             <Pagination perPage={users?.per_page} current={users?.page} total={users?.total} onPageSwitch={loadUsers} />
                         </Flex>
