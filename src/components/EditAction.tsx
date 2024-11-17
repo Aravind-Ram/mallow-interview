@@ -9,7 +9,7 @@ interface Prop {
 
 const EditAction: React.FC<Prop> = ({user, handleAction}) => {
 
-    return (<Button color="primary" variant="solid" onClick={(e) => handleAction(user)}>Edit</Button>);
+    return (<Button color="primary" variant="solid" onClick={() => handleAction(user)}>Edit</Button>);
 }
 
 export default EditAction;

@@ -35,7 +35,7 @@ const UserList: React.FC = () => {
 
     const deleteUser = (user: IUser.User) => {
         axiosInstance.delete(`/users/${user?.id}`)
-            .then(res => {
+            .then(() => {
                 loadUsers(users?.page ?? 1);
             })
             .catch(err => {
@@ -46,7 +46,7 @@ const UserList: React.FC = () => {
     const loadUsers = useCallback((page: number) => {
         axiosInstance.get("/users?page=" + page)
             .then(res => {
-                let userCollection = { ...res.data, users: res.data.data };
+                const userCollection = { ...res.data, users: res.data.data };
                 setUsers(userCollection);
             })
             .catch(err => {
@@ -64,7 +64,7 @@ const UserList: React.FC = () => {
 
     const handleUserCreate = useCallback((data: IUser.User) => {
         axiosInstance.post("/auth/register", data)
-            .then(res => {
+            .then(() => {
                 loadUsers(users?.page ?? 1);
                 setIsModalOpen(false);
             })
@@ -75,7 +75,7 @@ const UserList: React.FC = () => {
 
     const handleUserUpdate = useCallback((data: IUser.User) => {
         axiosInstance.post(`/user/${selectedUser?.id}`, data)
-            .then(res => {
+            .then(() => {
                 loadUsers(users?.page ?? 1);
                 setIsModalOpen(false);
             })

@@ -10,7 +10,7 @@ export namespace IUser {
         per_page?: number,
         total?: number,
         total_pages?: number,
-        users?: User[], 
+        users?: User[],
         data?: User[],
         support?: any
     }

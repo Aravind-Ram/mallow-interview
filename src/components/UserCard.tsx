@@ -1,6 +1,5 @@
 import React from 'react';
-import { DeleteOutlined, EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import { Avatar, Card } from 'antd';
+import { Card } from 'antd';
 import { IUser } from '../interfaces/IUser';
 import DeleteAction from './DeleteAction';
 import EditAction from './EditAction';
@@ -23,8 +22,8 @@ const UserCard: React.FC<Prop> = ({user, editAction, deleteAction}) => (
             />
         }
         actions={[            
-            <EditAction user={user} handleAction={editAction} />,
-            <DeleteAction key="delete" user={user} handleAction={deleteAction}/>,
+            <EditAction key={`edit${user.id}`} user={user} handleAction={editAction} />,
+            <DeleteAction key={`delete${user.id}`} user={user} handleAction={deleteAction}/>,
         ]}
     >
         <Meta

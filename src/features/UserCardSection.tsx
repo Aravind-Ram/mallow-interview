@@ -1,7 +1,7 @@
 import React from "react"
 import { IUser } from "../interfaces/IUser"
 import UserCard from "../components/UserCard"
-import { Flex, Button, Row, Col } from "antd"
+import { Row, Col } from "antd"
 
 interface Prop{
     collection: IUser.UserCollection,

@@ -4,11 +4,12 @@ import { useNavigate } from "react-router";
 import { decryptData } from "../utils/crypto";
 import { Button, Flex, Typography } from "antd";
 import { LogoutOutlined } from '@ant-design/icons';
+import { IAuth } from "../interfaces/IAuth";
 
 const AuthStatus: React.FC = () => {
 
-    let auth: any = useAuth();
-    let navigate = useNavigate();
+    const auth: IAuth.AuthContextType = useAuth();
+    const navigate = useNavigate();
 
     const authUser = decryptData(auth.user);
 

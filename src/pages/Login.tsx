@@ -16,7 +16,7 @@ const Login: React.FC = () => {
 
     const [authError, setAuthError] = useState(false);
 
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     const auth = useAuth();
 

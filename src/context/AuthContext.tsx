@@ -1,26 +1,19 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { fakeAuthProvider } from "../auth";
 import { encryptData } from "../utils/crypto";
+import { IAuth } from "../interfaces/IAuth";
 
-interface AuthContextType {
-    user: {
-        email: string,
-        password: string
-    };
-    loading: boolean;
-    signin: (user: any, callback: VoidFunction) => void;
-    signout: (callback: VoidFunction) => void;
-}
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const AuthContext = createContext<IAuth.AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 
-    let [user, setUser] = React.useState<any>(null);
+    const [user, setUser] = React.useState<any>(null);
 
     const [loading, setLoading] = React.useState<boolean>(true);    
 
-    let signin = (newUser: string, callback: VoidFunction) => {
+    const signin = (newUser: string, callback: VoidFunction) => {
         return fakeAuthProvider.signin(() => {                                    
             const authToken = encryptData(newUser);
             localStorage.setItem('authToken', authToken);
@@ -38,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false)
     }, []);
 
-    let signout = (callback: VoidFunction) => {
+    const signout = (callback: VoidFunction) => {
         return fakeAuthProvider.signout(() => {
             localStorage.removeItem("authToken");
             setUser(null);
@@ -46,12 +39,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
     };
 
-    let value: any = { user, loading, signin, signout };
+    const value: any = { user, loading, signin, signout };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = (): IAuth.AuthContextType => {
 
     const context = useContext(AuthContext);
     if (context === undefined) {
