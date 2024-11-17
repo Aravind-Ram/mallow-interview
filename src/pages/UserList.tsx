@@ -25,7 +25,7 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     loadUsers(1);
-  }, []);
+  });
 
   const editUser = (user: IUser.User) => {
     setSelectedUser(user);

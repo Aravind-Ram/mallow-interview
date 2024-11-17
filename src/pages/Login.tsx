@@ -90,7 +90,11 @@ const Login: React.FC = () => {
             <Form.Item<FieldType>
               name="email"
               rules={[
-                { required: true, message: 'Please input your email address!' },
+                {
+                  required: true,
+                  type: 'email',
+                  message: 'Please enter valid email address!',
+                },
               ]}
             >
               <Input
@@ -104,6 +108,10 @@ const Login: React.FC = () => {
               name="password"
               rules={[
                 { required: true, message: 'Please input your password!' },
+                {
+                  max: 20,
+                  message: 'Password should be less than 20 character',
+                },
               ]}
             >
               <Input.Password

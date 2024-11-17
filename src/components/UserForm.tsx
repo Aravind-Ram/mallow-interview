@@ -38,7 +38,10 @@ const UserForm: React.FC<IUser.UserFormProps> = ({ user, handleAction }) => {
       <Form.Item<FieldType>
         name="first_name"
         label="First name"
-        rules={[{ required: true, message: 'Please input first name' }]}
+        rules={[
+          { required: true, message: 'Please input first name' },
+          { max: 100, message: 'Name should be less than 100 character' },
+        ]}
       >
         <Input placeholder="First Name" />
       </Form.Item>
@@ -46,7 +49,10 @@ const UserForm: React.FC<IUser.UserFormProps> = ({ user, handleAction }) => {
       <Form.Item<FieldType>
         name="last_name"
         label="Last name"
-        rules={[{ required: true, message: 'Please input last name' }]}
+        rules={[
+          { required: true, message: 'Please enter last name' },
+          { max: 100, message: 'Name should be less than 100 character' },
+        ]}
       >
         <Input placeholder="Last Name" />
       </Form.Item>
@@ -55,7 +61,11 @@ const UserForm: React.FC<IUser.UserFormProps> = ({ user, handleAction }) => {
         name="email"
         label="Email address"
         rules={[
-          { required: true, message: 'Please input your email address!' },
+          {
+            required: true,
+            type: 'email',
+            message: 'Please enter valid email address!',
+          },
         ]}
       >
         <Input type="email" placeholder="Email address" />
@@ -64,7 +74,10 @@ const UserForm: React.FC<IUser.UserFormProps> = ({ user, handleAction }) => {
       <Form.Item<FieldType>
         name="avatar"
         label="Profile Image URL"
-        rules={[{ required: true, message: 'Please enter profile image' }]}
+        rules={[
+          { required: true, message: 'Please enter profile image URL' },
+          { type: 'url', message: 'Please enter valid URL' },
+        ]}
       >
         <Input placeholder="Profile Image URL" />
       </Form.Item>
