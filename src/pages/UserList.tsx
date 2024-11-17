@@ -3,7 +3,7 @@ import { Content } from 'antd/es/layout/layout';
 import React, { useCallback, useEffect, useState } from 'react';
 import AuthStatus from '../components/AuthStatus';
 import axiosInstance from '../axios';
-import UserForm from '../components/UserForm';
+import UserForm from '../features/UserForm';
 import { IUser } from '../interfaces/IUser';
 import Pagination from '../components/Pagination';
 import UserCardSection from '../features/UserCardSection';
