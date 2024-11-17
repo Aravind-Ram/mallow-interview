@@ -1,20 +1,16 @@
 import { Table, theme, Layout, Flex, Typography, Col, Input, Button, Avatar, Modal } from "antd";
 import { TableOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { Content } from "antd/es/layout/layout";
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import type { GetProps } from 'antd';
 import AuthStatus from "../components/AuthStatus";
 import axiosInstance from "../axios";
+import UserForm from "../components/UserForm";
+import { IUser } from "../interfaces/IUser";
+import DeleteAction from "../components/DeleteAction";
+import Pagination from "../components/Pagination";
 
 type SearchProps = GetProps<typeof Input.Search>;
-
-interface IUser {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    avatar: string
-}
 
 const UserList: React.FC = () => {
 
@@ -22,21 +18,25 @@ const UserList: React.FC = () => {
         token: { borderRadiusLG, colorBgContainer },
     } = theme.useToken();
 
-    const [users, setUsers] = useState<IUser[]>();
+    const [users, setUsers] = useState<IUser.UserCollection>();
+
+    const [selectedUser, setSelectedUser] = useState<IUser.User | null>(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const editUser = (user: IUser) => {
-        // axiosInstance.delete('/users/1');
+    const editUser = (user: IUser.User) => {
+        setSelectedUser(user);
         setIsModalOpen(true);
     }
 
-    const deleteUser = (user: IUser) => {
-        // axiosInstance.delete('/users/1');
+    const deleteUser = (user: IUser.User) => {
+        axiosInstance.delete(`/users/${user?.id}`)
+            .then(res => {
+                loadUsers(users?.page ?? 1);
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 
     const columns = [
@@ -65,31 +65,56 @@ const UserList: React.FC = () => {
             title: 'Action',
             dataIndex: '',
             key: 'action',
-            render: (record: IUser) => <>
+            render: (record: IUser.User) => <>
                 <Button color="primary" variant="solid" onClick={(e) => editUser(record)}>Edit</Button>
-                <Button color="danger" variant="solid" onClick={(e) => deleteUser(record)}>Delete</Button>
+                <DeleteAction user={record} handleAction={deleteUser} />
             </>,
         },
     ];
 
     useEffect(() => {
-        axiosInstance.get("/users")
+        loadUsers(1)
+    }, []);
+
+    const loadUsers = useCallback((page: number) => {
+        axiosInstance.get("/users?page=" + page)
             .then(res => {
-                const data = res.data;
-                setUsers(data.data);
+                setUsers(res.data);
             })
             .catch(err => {
                 console.error(err);
             });
-    }, []);
-
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
+    }, [])
 
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+
+    const createUser = () => {
+        setIsModalOpen(true)
+    }
+
+    const handleUserCreate = useCallback((data: IUser.User) => {
+        axiosInstance.post("/auth/register", data)
+            .then(res => {
+                loadUsers(users?.page ?? 1);
+                setIsModalOpen(false);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }, [])
+
+    const handleUserUpdate = useCallback((data: IUser.User) => {
+        axiosInstance.post(`/user/${selectedUser?.id}`, data)
+            .then(res => {
+                loadUsers(users?.page ?? 1);
+                setIsModalOpen(false);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }, [selectedUser])
 
     const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
 
@@ -111,7 +136,7 @@ const UserList: React.FC = () => {
                         <Typography.Paragraph strong>Users</Typography.Paragraph>
                         <Col>
                             <Input.Search placeholder="Search user" allowClear onSearch={onSearch} style={{ width: 200 }} />
-                            <Button type="primary" style={{ marginLeft: "1rem" }}>Create User</Button>
+                            <Button type="primary" style={{ marginLeft: "1rem" }} onClick={createUser}>Create User</Button>
                         </Col>
                     </Flex>
                     <Flex vertical={false} justify={'flex-start'} align={'center'}>
@@ -119,13 +144,18 @@ const UserList: React.FC = () => {
                         <Button color="default" variant="outlined" icon={<UnorderedListOutlined />}>Card</Button>
                     </Flex>
                 </Flex>
-                <Table dataSource={users} columns={columns} rowKey="id" />
+                <Table dataSource={users?.data} columns={columns} rowKey="id" pagination={false} />
+                {
+                    users && users?.data.length > 0 ? <Flex justify="center" style={{ marginTop: "1rem" }}>
+                        <Flex vertical={false} justify={'center'} align={'center'}>
+                            <Pagination perPage={users?.per_page} current={users?.page} total={users?.total} onPageSwitch={loadUsers} />
+                        </Flex>
+                    </Flex> : <></>
+                }
             </div>
         </Content>
-        <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+        <Modal title={selectedUser ? 'Edit User' : 'Create User'} open={isModalOpen} footer={null} onCancel={handleCancel}>
+            <UserForm user={selectedUser} handleAction={selectedUser ? handleUserUpdate : handleUserCreate} />
         </Modal>
     </Layout>;
 }
