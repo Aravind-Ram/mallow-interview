@@ -14,6 +14,7 @@ interface Prop {
 
 const UserCard: React.FC<Prop> = ({ user, editAction, deleteAction }) => (
   <Card
+    loading={true}
     style={{ margin: '10px' }}
     cover={<img alt={user.first_name} src={user.avatar} />}
     actions={[
