@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { fakeAuthProvider } from "../auth";
-import { UserTypes } from "../types/UserTypes";
-
+import { encryptData } from "../utils/crypto";
 
 interface AuthContextType {
     user: {
@@ -9,38 +8,39 @@ interface AuthContextType {
         password: string
     };
     loading: boolean;
-    signin: (user: UserTypes.authUser, callback: VoidFunction) => void;
+    signin: (user: any, callback: VoidFunction) => void;
     signout: (callback: VoidFunction) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    
+
     let [user, setUser] = React.useState<any>(null);
 
-    const [loading, setLoading] = React.useState<boolean>(true);
+    const [loading, setLoading] = React.useState<boolean>(true);    
 
     let signin = (newUser: string, callback: VoidFunction) => {
-        return fakeAuthProvider.signin(() => {
-            localStorage.setItem('authUser', JSON.stringify(newUser));
-            setUser(newUser);
-            callback();
+        return fakeAuthProvider.signin(() => {                                    
+            const authToken = encryptData(newUser);
+            localStorage.setItem('authToken', authToken);
+            setUser(authToken);
+            callback();            
         });
     };
 
     // Check localStorage on app load
     useEffect(() => {
-        const authUser = localStorage.getItem("authUser");
-        if (authUser) {
-            setUser(JSON.parse(authUser));
+        const authToken = localStorage.getItem("authToken");
+        if (authToken) {
+            setUser(authToken);
         }
         setLoading(false)
     }, []);
 
     let signout = (callback: VoidFunction) => {
         return fakeAuthProvider.signout(() => {
-            localStorage.removeItem("authUser");
+            localStorage.removeItem("authToken");
             setUser(null);
             callback();
         });

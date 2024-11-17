@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { FormProps } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import { Card, Col, Row, Button, Checkbox, Form, Input, theme, Flex } from 'antd';
+import { Card, Col, Row, Button, Checkbox, Form, Input, theme, Flex, Alert } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axios';
@@ -14,6 +14,8 @@ type FieldType = {
 
 const Login: React.FC = () => {
 
+    const [authError, setAuthError] = useState(false);
+
     let navigate = useNavigate();
 
     const auth = useAuth();
@@ -23,20 +25,24 @@ const Login: React.FC = () => {
     } = theme.useToken();
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        // let user: any = { email: values.email, password: values.password };
-        const response = axiosInstance.post("/auth/login", values)
-            .then(res => {
-                console.log(res);
-            });
-        // const { token } = response.data;
-        // console.log(token);
-        // localStorage.setItem("authToken", token);
-        // return response.data;
-    };
 
-    // auth.signin(user, () => {
-    //     navigate('/user', { replace: true });
-    // });
+        if (process.env.REACT_APP_AUTH_EMAIL === values.email && process.env.REACT_APP_AUTH_PASSWORD === values.password) {
+
+
+            axiosInstance.post("/auth/login", values)
+                .then(res => {
+                    auth.signin(res.data, () => {
+                        navigate('/user', { replace: true });
+                        setAuthError(false);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        } else {
+            setAuthError(true);
+        }
+    };
 
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -48,7 +54,6 @@ const Login: React.FC = () => {
         <Col
             style={{
                 display: "flex",
-                alignItems: "center",
                 justifyContent: "center",
                 flex: 1
             }}
@@ -72,7 +77,7 @@ const Login: React.FC = () => {
                             { required: true, message: 'Please input your email address!' },
                         ]}
                     >
-                        <Input placeholder="Email" prefix={<MailOutlined />} />
+                        <Input type='email' placeholder="Email address" prefix={<MailOutlined />} />
                     </Form.Item>
 
                     <Form.Item<FieldType>
@@ -93,6 +98,12 @@ const Login: React.FC = () => {
                             Submit
                         </Button>
                     </Form.Item>
+                    {authError ?
+                        <Alert
+                            description="Incorrect email or password."
+                            type="error"
+                            showIcon
+                        /> : <></>}
                 </Form>
             </Card>
         </Col>

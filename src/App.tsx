@@ -1,9 +1,8 @@
 import { AuthProvider } from './context/AuthContext';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import routes from './routes';
 import './App.css';
 import { Suspense } from 'react';
-import AuthStatus from './components/AuthStatus';
 import Login from './pages/Login';
 import RequireAuth from './middlewares/RequireAuth';
 
