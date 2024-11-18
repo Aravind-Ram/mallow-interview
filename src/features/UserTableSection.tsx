@@ -5,13 +5,15 @@ import DeleteAction from '../components/DeleteAction';
 import { Avatar, Table } from 'antd';
 
 interface Prop {
-  collection: IUser.UserCollection;
+  collection: IUser.Collection | null;
+  users: IUser.User[] | null;
   deleteAction: any;
   editAction: any;
 }
 
 const UserTableSection: React.FC<Prop> = ({
   collection,
+  users,
   editAction,
   deleteAction,
 }) => {
@@ -54,13 +56,15 @@ const UserTableSection: React.FC<Prop> = ({
     },
   ];
 
-  return (
+  return users ? (
     <Table
-      dataSource={collection?.users}
+      dataSource={users}
       columns={columns}
       rowKey="id"
       pagination={false}
     />
+  ) : (
+    <></>
   );
 };
 

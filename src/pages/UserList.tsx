@@ -1,6 +1,7 @@
 import { theme, Layout, Flex, Modal } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
 import AuthStatus from '../components/AuthStatus';
 import axiosInstance from '../axios';
 import UserForm from '../features/UserForm';
@@ -10,10 +11,15 @@ import UserCardSection from '../features/UserCardSection';
 import UserTableSection from '../features/UserTableSection';
 import UserHead from '../components/UserHead';
 import { notification } from 'antd';
+import { fetchCollection, toggleEditOff } from '../features/usersSlice';
 
 const Context = React.createContext({ name: 'Default' });
 
 const UserList: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { users, collection, selectedUser, openModal, loading, error } =
+    useAppSelector((state) => state.users);
+
   const {
     token: { borderRadiusLG, colorBgContainer },
   } = theme.useToken();
@@ -28,19 +34,19 @@ const UserList: React.FC = () => {
 
   const [view, setView] = useState<string>('table');
 
-  const [users, setUsers] = useState<IUser.UserCollection>({});
+  // const [users, setUsers] = useState<IUser.UserCollection>({});
 
-  const [selectedUser, setSelectedUser] = useState<IUser.User | null>(null);
+  // const [selectedUser, setSelectedUser] = useState<IUser.User | null>(null);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    loadUsers(1);
-  }, []);
+    dispatch(fetchCollection());
+  }, [dispatch]);
 
   const editUser = (user: IUser.User) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
+    // setSelectedUser(user);
+    // setIsModalOpen(true);
   };
 
   const deleteUser = (user: IUser.User) => {
@@ -48,9 +54,9 @@ const UserList: React.FC = () => {
       .delete(`/users/${user?.id}`)
       .then(() => {
         // loadUsers(users?.page ?? 1); Getting response 200 all API request but actually not reflected to the api so manually did it
-        const filtered: IUser.User[] =
-          users?.data?.filter((iuser) => iuser.id !== user?.id) ?? [];
-        setUsers({ ...users, users: filtered });
+        // const filtered: IUser.User[] =
+        //   users?.data?.filter((iuser) => iuser.id !== user?.id) ?? [];
+        // setUsers({ ...users, users: filtered });
         toastr('User has been deleted');
       })
       .catch((err) => {
@@ -62,8 +68,8 @@ const UserList: React.FC = () => {
     axiosInstance
       .get('/users?page=' + page)
       .then((res) => {
-        const userCollection = { ...res.data, users: res.data.data };
-        setUsers(userCollection);
+        // const userCollection = { ...res.data, users: res.data.data };
+        // setUsers(userCollection);
       })
       .catch((err) => {
         console.error(err);
@@ -71,20 +77,20 @@ const UserList: React.FC = () => {
   }, []);
 
   const handleCancel = () => {
-    setIsModalOpen(false);
+    // setIsModalOpen(false);
   };
 
   const createUser = () => {
-    setIsModalOpen(true);
+    // setIsModalOpen(true);
   };
 
   const handleUserCreate = useCallback((data: IUser.User) => {
     axiosInstance
       .post('/auth/register', data)
       .then(() => {
-        loadUsers(users?.page ?? 1);
-        setIsModalOpen(false);
-        toastr('User has been created');
+        // loadUsers(users?.page ?? 1);
+        // setIsModalOpen(false);
+        // toastr('User has been created');
       })
       .catch((err) => {
         console.error(err);
@@ -97,10 +103,10 @@ const UserList: React.FC = () => {
         .post(`/user/${selectedUser?.id}`, data)
         .then(() => {
           // loadUsers(users?.page ?? 1);
-          const filtered: IUser.User[] =
-            users?.data?.filter((user) => user.id !== selectedUser?.id) ?? [];
-          setUsers({ ...users, users: filtered });
-          setIsModalOpen(false);
+          // const filtered: IUser.User[] =
+          //   users?.data?.filter((user) => user.id !== selectedUser?.id) ?? [];
+          // setUsers({ ...users, users: filtered });
+          // setIsModalOpen(false);
           toastr('User has been updated');
         })
         .catch((err) => {
@@ -111,17 +117,17 @@ const UserList: React.FC = () => {
   );
 
   const filterUsers = (query: string) => {
-    if (query.length <= 2) {
-      setUsers({ ...users, users: users?.data });
-    } else {
-      const filtered: IUser.User[] =
-        users?.data?.filter(
-          (user) =>
-            user.first_name.toLowerCase().includes(query.toLowerCase()) ||
-            user.last_name.toLowerCase().includes(query.toLowerCase()),
-        ) ?? [];
-      setUsers({ ...users, users: filtered });
-    }
+    // if (query.length <= 2) {
+    //   setUsers({ ...users, users: users?.data });
+    // } else {
+    //   const filtered: IUser.User[] =
+    //     users?.data?.filter(
+    //       (user) =>
+    //         user.first_name.toLowerCase().includes(query.toLowerCase()) ||
+    //         user.last_name.toLowerCase().includes(query.toLowerCase()),
+    //     ) ?? [];
+    //   setUsers({ ...users, users: filtered });
+    // }
   };
 
   const toggleView = (mode: string) => {
@@ -156,24 +162,24 @@ const UserList: React.FC = () => {
             />
             {view === 'table' ? (
               <UserTableSection
-                collection={users}
+                collection={collection}
+                users={users}
                 editAction={editUser}
                 deleteAction={deleteUser}
               />
             ) : (
               <UserCardSection
-                collection={users}
                 editAction={editUser}
                 deleteAction={deleteUser}
               />
             )}
-            {users && users?.data && users?.data.length > 0 ? (
+            {users && users.length > 0 ? (
               <Flex justify="center" style={{ marginTop: '1rem' }}>
                 <Flex vertical={false} justify={'center'} align={'center'}>
                   <Pagination
-                    perPage={users?.per_page}
-                    current={users?.page}
-                    total={users?.total}
+                    perPage={collection?.per_page}
+                    current={collection?.page}
+                    total={collection?.total}
                     onPageSwitch={loadUsers}
                   />
                 </Flex>
@@ -185,9 +191,9 @@ const UserList: React.FC = () => {
         </Content>
         <Modal
           title={selectedUser ? 'Edit User' : 'Create User'}
-          open={isModalOpen}
+          open={openModal}
           footer={null}
-          onCancel={handleCancel}
+          onCancel={() => dispatch(toggleEditOff())}
         >
           <UserForm
             user={selectedUser}

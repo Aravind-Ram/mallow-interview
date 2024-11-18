@@ -3,6 +3,7 @@ import { Card } from 'antd';
 import { IUser } from '../interfaces/IUser';
 import DeleteAction from './DeleteAction';
 import EditAction from './EditAction';
+import { toggleEdit } from '../features/usersSlice';
 
 const { Meta } = Card;
 
@@ -14,14 +15,13 @@ interface Prop {
 
 const UserCard: React.FC<Prop> = ({ user, editAction, deleteAction }) => (
   <Card
-    loading={true}
     style={{ margin: '10px' }}
     cover={<img alt={user.first_name} src={user.avatar} />}
     actions={[
       <EditAction
         key={`edit${user.id}`}
         user={user}
-        handleAction={editAction}
+        handleAction={toggleEdit}
       />,
       <DeleteAction
         key={`delete${user.id}`}
