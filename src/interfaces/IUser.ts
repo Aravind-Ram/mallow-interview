@@ -27,6 +27,7 @@ export namespace IUser {
     loading: boolean;
     error: string | null;
     viewMode: string;
+    triggerNotification: string;
   }
 
   export interface UserActionProps {

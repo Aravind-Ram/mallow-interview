@@ -1,6 +1,6 @@
 import { theme, Layout, Flex, Modal } from 'antd';
 import { Content } from 'antd/es/layout/layout';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import AuthStatus from '../components/AuthStatus';
 import UserForm from '../features/UserForm';
@@ -8,35 +8,41 @@ import Pagination from '../components/Pagination';
 import UserCardSection from '../features/UserCardSection';
 import UserTableSection from '../features/UserTableSection';
 import UserHead from '../components/UserHead';
-import { notification } from 'antd';
 import { fetchCollection, closeModal } from '../app/usersSlice';
-
+import { notification } from 'antd';
 const Context = React.createContext({ name: 'Default' });
 
 const UserList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { users, collection, viewMode, selectedUser, openModal } =
-    useAppSelector((state) => state.users);
+  const {
+    users,
+    collection,
+    viewMode,
+    selectedUser,
+    openModal,
+    triggerNotification,
+  } = useAppSelector((state) => state.users);
 
   const {
     token: { borderRadiusLG, colorBgContainer },
   } = theme.useToken();
 
-  const toastr = (message: string) => {
-    api['success']({
-      message: 'Weldone!',
-      description: message,
-      placement: 'topRight',
-    });
-  };
+  const [api, contextHolder] = notification.useNotification();
+  const contextValue = useMemo(() => ({ name: 'Mallow Interview' }), []);
 
   useEffect(() => {
     dispatch(fetchCollection(null));
   }, [dispatch]);
 
-  const [api, contextHolder] = notification.useNotification();
-
-  const contextValue = useMemo(() => ({ name: 'Mallow Interview' }), []);
+  useEffect(() => {
+    if (triggerNotification !== '') {
+      api['success']({
+        message: 'Weldone!',
+        description: triggerNotification,
+        placement: 'topRight',
+      });
+    }
+  }, [triggerNotification]);
 
   return (
     <Context.Provider value={contextValue}>

@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { IUser } from '../interfaces/IUser';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 
@@ -9,6 +9,7 @@ const EditAction: React.FC<IUser.UserActionProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.users);
+
   return (
     <Button
       color="primary"

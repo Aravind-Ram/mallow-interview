@@ -9,6 +9,7 @@ const DeleteAction: React.FC<IUser.UserActionProps> = ({
   handleAction,
 }) => {
   const dispatch = useAppDispatch();
+
   return (
     <Popconfirm
       title="Delete the user"

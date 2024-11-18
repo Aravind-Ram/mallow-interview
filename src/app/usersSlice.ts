@@ -11,6 +11,7 @@ const initialState: IUser.UsersState = {
   openModal: false,
   error: null,
   viewMode: 'table',
+  triggerNotification: '',
 };
 
 // Async Thunk to fetch users
@@ -50,7 +51,7 @@ export const updateUser = createAsyncThunk<
     `/users/${state.users.selectedUser?.id}`,
     values,
   );
-  if (response.status !== 201) {
+  if (response.status !== 200) {
     throw new Error('Failed to fetch users');
   }
   return response.data;
@@ -155,6 +156,7 @@ const usersSlice = createSlice({
         (state, action: PayloadAction<IUser.User>) => {
           state.loading = false;
           state.openModal = false;
+          state.triggerNotification = 'User has been created';
         },
       )
       .addCase(createUser.rejected, (state, action) => {
@@ -172,6 +174,7 @@ const usersSlice = createSlice({
           state.loading = false;
           state.openModal = false;
           state.selectedUser = null;
+          state.triggerNotification = 'User has been updated';
         },
       )
       .addCase(updateUser.rejected, (state, action) => {
@@ -217,6 +220,7 @@ const usersSlice = createSlice({
             state.collection?.data?.filter(
               (iuser) => iuser.email !== action.payload.email,
             ) ?? [];
+          state.triggerNotification = 'User has been deleted';
           state.users = filtered;
         },
       )
