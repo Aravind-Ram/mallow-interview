@@ -2,9 +2,8 @@ import { Button, Col, Flex, Typography } from 'antd';
 import { TableOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import Search from './Search';
 import React from 'react';
-import { toggleCreate } from '../features/usersSlice';
+import { toggleCreate, toggleViewMode } from '../app/usersSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { toggleViewMode } from '../features/usersSlice';
 
 const UserHead: React.FC = () => {
   const dispatch = useAppDispatch();

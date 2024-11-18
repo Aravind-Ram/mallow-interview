@@ -2,7 +2,7 @@ import React from 'react';
 import { IUser } from '../interfaces/IUser';
 import EditAction from '../components/EditAction';
 import DeleteAction from '../components/DeleteAction';
-import { toggleEdit, deleteUser } from '../features/usersSlice';
+import { toggleEdit, deleteUser } from '../app/usersSlice';
 import { Avatar, Table, TableProps } from 'antd';
 import { useAppSelector } from '../app/hooks';
 

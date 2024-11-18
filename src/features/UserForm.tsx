@@ -3,7 +3,7 @@ import type { FormProps } from 'antd';
 import { Button, Form, Input } from 'antd';
 import { IUser } from '../interfaces/IUser';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { createUser, updateUser } from './usersSlice';
+import { createUser, updateUser } from '../app/usersSlice';
 
 type FieldType = {
   first_name?: string;

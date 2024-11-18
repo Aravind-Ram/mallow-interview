@@ -1,7 +1,7 @@
 import { Input } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { filterUsers } from '../features/usersSlice';
+import { filterUsers } from '../app/usersSlice';
 
 const Search: React.FC = () => {
   const dispatch = useAppDispatch();

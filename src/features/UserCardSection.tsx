@@ -2,7 +2,7 @@ import React from 'react';
 import UserCard from '../components/UserCard';
 import { Row, Col, Card } from 'antd';
 import { useAppSelector } from '../app/hooks';
-import { deleteUser } from '../features/usersSlice';
+import { deleteUser } from '../app/usersSlice';
 
 const UserCardSection: React.FC = () => {
   const { users, loading, error } = useAppSelector((state) => state.users);

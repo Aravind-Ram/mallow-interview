@@ -9,7 +9,7 @@ import UserCardSection from '../features/UserCardSection';
 import UserTableSection from '../features/UserTableSection';
 import UserHead from '../components/UserHead';
 import { notification } from 'antd';
-import { fetchCollection, closeModal } from '../features/usersSlice';
+import { fetchCollection, closeModal } from '../app/usersSlice';
 
 const Context = React.createContext({ name: 'Default' });
 

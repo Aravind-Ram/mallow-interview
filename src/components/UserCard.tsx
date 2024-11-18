@@ -3,7 +3,7 @@ import { Card } from 'antd';
 import { IUser } from '../interfaces/IUser';
 import DeleteAction from './DeleteAction';
 import EditAction from './EditAction';
-import { toggleEdit } from '../features/usersSlice';
+import { toggleEdit } from '../app/usersSlice';
 
 const { Meta } = Card;
 
