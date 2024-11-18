@@ -17,7 +17,7 @@ const UserCard: React.FC<Prop> = ({ loading, user, deleteAction }) => (
   <Card
     loading={loading}
     style={{ margin: '10px' }}
-    cover={<img alt={user.first_name} src={user.avatar} />}
+    cover={loading ? <></> : <img alt={user.first_name} src={user.avatar} />}
     actions={[
       <EditAction
         key={`edit${user.id}`}

@@ -1,6 +1,6 @@
 import React from 'react';
 import UserCard from '../components/UserCard';
-import { Row, Col } from 'antd';
+import { Row, Col, Card } from 'antd';
 import { useAppSelector } from '../app/hooks';
 import { deleteUser } from '../features/usersSlice';
 
@@ -15,6 +15,8 @@ const UserCardSection: React.FC = () => {
         </Col>
       ))}
     </Row>
+  ) : loading ? (
+    <Card loading={loading} style={{ margin: '10px' }} />
   ) : (
     <></>
   );
