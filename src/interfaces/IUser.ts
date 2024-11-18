@@ -26,6 +26,7 @@ export namespace IUser {
     openModal: boolean;
     loading: boolean;
     error: string | null;
+    viewMode: string;
   }
 
   export interface UserActionProps {
@@ -36,11 +37,6 @@ export namespace IUser {
   export interface UserFormActionProps {
     user: User | null;
     handleAction: any;
-  }
-
-  export interface authUser {
-    email: string;
-    password: string;
   }
 
   export interface CreateUser {

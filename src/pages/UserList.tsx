@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import AuthStatus from '../components/AuthStatus';
 import UserForm from '../features/UserForm';
-import { IUser } from '../interfaces/IUser';
 import Pagination from '../components/Pagination';
 import UserCardSection from '../features/UserCardSection';
 import UserTableSection from '../features/UserTableSection';
@@ -16,8 +15,15 @@ const Context = React.createContext({ name: 'Default' });
 
 const UserList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { users, collection, selectedUser, openModal, loading, error } =
-    useAppSelector((state) => state.users);
+  const {
+    users,
+    collection,
+    viewMode,
+    selectedUser,
+    openModal,
+    loading,
+    error,
+  } = useAppSelector((state) => state.users);
 
   const {
     token: { borderRadiusLG, colorBgContainer },
@@ -31,15 +37,9 @@ const UserList: React.FC = () => {
     });
   };
 
-  const [view, setView] = useState<string>('table');
-
   useEffect(() => {
-    dispatch(fetchCollection());
+    dispatch(fetchCollection(null));
   }, [dispatch]);
-
-  const toggleView = (mode: string) => {
-    setView(mode);
-  };
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -61,8 +61,8 @@ const UserList: React.FC = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <UserHead view={view} toggleView={toggleView} />
-            {view === 'table' ? (
+            <UserHead />
+            {viewMode === 'table' ? (
               <UserTableSection users={users} />
             ) : (
               <UserCardSection />
@@ -70,13 +70,12 @@ const UserList: React.FC = () => {
             {users && users.length > 0 ? (
               <Flex justify="center" style={{ marginTop: '1rem' }}>
                 <Flex vertical={false} justify={'center'} align={'center'}>
-                  <></>
-                  {/* <Pagination
+                  <Pagination
                     perPage={collection?.per_page}
                     current={collection?.page}
                     total={collection?.total}
-                    onPageSwitch={loadUsers}
-                  /> */}
+                    onPageSwitch={fetchCollection}
+                  />
                 </Flex>
               </Flex>
             ) : (

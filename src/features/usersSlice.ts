@@ -10,19 +10,23 @@ const initialState: IUser.UsersState = {
   loading: false,
   openModal: false,
   error: null,
+  viewMode: 'table',
 };
 
 // Async Thunk to fetch users
-export const fetchCollection = createAsyncThunk<IUser.Collection>(
-  'users/fetchCollection',
-  async () => {
-    const response = await axiosInstance.get('/users');
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch users');
-    }
-    return response.data;
-  },
-);
+export const fetchCollection = createAsyncThunk<
+  IUser.Collection,
+  number | null,
+  { state: RootState }
+>('users/fetchCollection', async (page = null, thunkAPI) => {
+  const state = thunkAPI.getState();
+  const loadPage = page ? page : (state.users.collection?.page ?? 1);
+  const response = await axiosInstance.get(`/users?page=${loadPage}`);
+  if (response.status !== 200) {
+    throw new Error('Failed to fetch users');
+  }
+  return response.data;
+});
 
 // Async Thunk to create user
 export const createUser = createAsyncThunk<IUser.User, IUser.CreateUser>(
@@ -74,7 +78,6 @@ export const deleteUser = createAsyncThunk<IUser.User, IUser.User>(
     if (response.status !== 204) {
       throw new Error('Failed to fetch users');
     }
-    fetchCollection();
     return user;
   },
 );
@@ -98,6 +101,13 @@ export const filterUsers = createAsyncThunk<
     return filtered;
   }
 });
+
+export const toggleViewMode = createAsyncThunk<string, string>(
+  'users/toggleViewMode',
+  async (mode) => {
+    return mode;
+  },
+);
 
 // Create the users slice
 const usersSlice = createSlice({
@@ -230,6 +240,18 @@ const usersSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Something went wrong';
       });
+    builder
+      .addCase(toggleViewMode.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        toggleViewMode.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.loading = false;
+          state.viewMode = action.payload;
+        },
+      );
   },
 });
 
