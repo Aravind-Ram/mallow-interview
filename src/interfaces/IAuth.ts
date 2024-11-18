@@ -8,4 +8,15 @@ export namespace IAuth {
     signin: (user: any, callback: VoidFunction) => void;
     signout: (callback: VoidFunction) => void;
   }
+
+  export interface AuthState {
+    error: boolean;
+    loading: boolean;
+  }
+
+  export interface Signin {
+    email?: string;
+    password?: string;
+    remember?: string;
+  }
 }

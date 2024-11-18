@@ -15,15 +15,8 @@ const Context = React.createContext({ name: 'Default' });
 
 const UserList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const {
-    users,
-    collection,
-    viewMode,
-    selectedUser,
-    openModal,
-    loading,
-    error,
-  } = useAppSelector((state) => state.users);
+  const { users, collection, viewMode, selectedUser, openModal } =
+    useAppSelector((state) => state.users);
 
   const {
     token: { borderRadiusLG, colorBgContainer },

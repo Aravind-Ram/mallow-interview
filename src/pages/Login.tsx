@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { FormProps } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import {
@@ -13,9 +13,10 @@ import {
   Flex,
   Alert,
 } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axiosInstance from '../axios';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { signIn, validateError } from '../app/authentication';
+import { useNavigate } from 'react-router-dom';
 
 type FieldType = {
   email?: string;
@@ -24,9 +25,10 @@ type FieldType = {
 };
 
 const Login: React.FC = () => {
-  const [authError, setAuthError] = useState(false);
-
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const { error, loading } = useAppSelector((state) => state.auth);
 
   const auth = useAuth();
 
@@ -39,19 +41,15 @@ const Login: React.FC = () => {
       process.env.REACT_APP_AUTH_EMAIL === values.email &&
       process.env.REACT_APP_AUTH_PASSWORD === values.password
     ) {
-      axiosInstance
-        .post('/auth/login', values)
-        .then((res) => {
-          auth.signin(res.data, () => {
+      dispatch(signIn(values)).then((result) => {
+        if (signIn.fulfilled.match(result)) {
+          auth.signin(values, () => {
             navigate('/user', { replace: true });
-            setAuthError(false);
           });
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+        }
+      });
     } else {
-      setAuthError(true);
+      dispatch(validateError());
     }
   };
 
@@ -127,11 +125,11 @@ const Login: React.FC = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" block>
+              <Button type="primary" htmlType="submit" block loading={loading}>
                 Submit
               </Button>
             </Form.Item>
-            {authError ? (
+            {error ? (
               <Alert
                 description="Incorrect email or password."
                 type="error"
