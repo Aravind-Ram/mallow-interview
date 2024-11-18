@@ -10,6 +10,7 @@ import UserTableSection from '../features/UserTableSection';
 import UserHead from '../components/UserHead';
 import { fetchCollection, closeModal } from '../app/usersSlice';
 import { notification } from 'antd';
+import ClientPagination from '../components/ClientPagination';
 const Context = React.createContext({ name: 'Default' });
 
 const UserList: React.FC = () => {
@@ -75,6 +76,7 @@ const UserList: React.FC = () => {
                     total={collection?.total}
                     onPageSwitch={fetchCollection}
                   />
+                  <ClientPagination onPageSwitch={fetchCollection} />
                 </Flex>
               </Flex>
             ) : (
