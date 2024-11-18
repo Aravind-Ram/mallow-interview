@@ -15,7 +15,7 @@ type FieldType = {
 const UserForm: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { selectedUser } = useAppSelector((state) => state.users);
+  const { selectedUser, loading } = useAppSelector((state) => state.users);
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     selectedUser ? dispatch(updateUser(values)) : dispatch(createUser(values));
@@ -89,7 +89,7 @@ const UserForm: React.FC = () => {
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit" block>
+        <Button type="primary" loading={loading} htmlType="submit" block>
           Submit
         </Button>
       </Form.Item>

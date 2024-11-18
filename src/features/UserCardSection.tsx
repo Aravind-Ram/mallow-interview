@@ -11,7 +11,7 @@ const UserCardSection: React.FC = () => {
     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
       {users.map((user) => (
         <Col className="gutter-row" span={6} key={user.id}>
-          <UserCard user={user} deleteAction={deleteUser} />
+          <UserCard loading={loading} user={user} deleteAction={deleteUser} />
         </Col>
       ))}
     </Row>

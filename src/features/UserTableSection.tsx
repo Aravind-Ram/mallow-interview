@@ -3,13 +3,16 @@ import { IUser } from '../interfaces/IUser';
 import EditAction from '../components/EditAction';
 import DeleteAction from '../components/DeleteAction';
 import { toggleEdit, deleteUser } from '../features/usersSlice';
-import { Avatar, Table } from 'antd';
+import { Avatar, Table, TableProps } from 'antd';
+import { useAppSelector } from '../app/hooks';
 
 interface Prop {
   users?: IUser.User[] | null;
 }
 
 const UserTableSection: React.FC<Prop> = ({ users }) => {
+  const { loading } = useAppSelector((state) => state.users);
+
   const columns = [
     {
       title: 'Avatar',
@@ -50,8 +53,9 @@ const UserTableSection: React.FC<Prop> = ({ users }) => {
   ];
 
   return users ? (
-    <Table
+    <Table<IUser.User>
       dataSource={users}
+      loading={loading}
       columns={columns}
       rowKey="id"
       pagination={false}

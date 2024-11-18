@@ -9,7 +9,7 @@ import { toggleViewMode } from '../features/usersSlice';
 const UserHead: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { viewMode } = useAppSelector((state) => state.users);
+  const { viewMode, loading } = useAppSelector((state) => state.users);
 
   return (
     <Flex align="space-between" vertical style={{ marginBottom: '1rem' }}>
@@ -20,6 +20,7 @@ const UserHead: React.FC = () => {
           <Button
             type="primary"
             style={{ marginLeft: '1rem' }}
+            loading={loading}
             onClick={() => dispatch(toggleCreate())}
           >
             Create User
@@ -31,6 +32,7 @@ const UserHead: React.FC = () => {
           color={viewMode === 'table' ? 'primary' : 'default'}
           variant="outlined"
           icon={<TableOutlined />}
+          loading={loading}
           onClick={() => dispatch(toggleViewMode('table'))}
         >
           Table
@@ -39,6 +41,7 @@ const UserHead: React.FC = () => {
           color={viewMode === 'card' ? 'primary' : 'default'}
           variant="outlined"
           icon={<UnorderedListOutlined />}
+          loading={loading}
           onClick={() => dispatch(toggleViewMode('card'))}
         >
           Card

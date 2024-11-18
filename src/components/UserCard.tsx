@@ -9,11 +9,13 @@ const { Meta } = Card;
 
 interface Prop {
   user: IUser.User;
+  loading: boolean;
   deleteAction: any;
 }
 
-const UserCard: React.FC<Prop> = ({ user, deleteAction }) => (
+const UserCard: React.FC<Prop> = ({ loading, user, deleteAction }) => (
   <Card
+    loading={loading}
     style={{ margin: '10px' }}
     cover={<img alt={user.first_name} src={user.avatar} />}
     actions={[
