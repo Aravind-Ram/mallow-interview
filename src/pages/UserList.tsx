@@ -68,16 +68,16 @@ const UserList: React.FC = () => {
               <UserCardSection />
             )}
             {users && users.length > 0 ? (
-              <Flex justify="center" style={{ marginTop: '1rem' }}>
-                <Flex vertical={false} justify={'center'} align={'center'}>
+              <Flex justify="space-between" style={{ marginTop: '1rem' }}>
+                <Flex vertical={false} justify={'space-between'}>
                   <Pagination
                     perPage={collection?.per_page}
                     current={collection?.page}
                     total={collection?.total}
                     onPageSwitch={fetchCollection}
                   />
-                  <ClientPagination onPageSwitch={fetchCollection} />
                 </Flex>
+                <ClientPagination onPageSwitch={fetchCollection} />
               </Flex>
             ) : (
               <></>
