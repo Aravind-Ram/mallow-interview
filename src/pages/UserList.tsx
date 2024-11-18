@@ -1,9 +1,8 @@
 import { theme, Layout, Flex, Modal } from 'antd';
 import { Content } from 'antd/es/layout/layout';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import AuthStatus from '../components/AuthStatus';
-import axiosInstance from '../axios';
 import UserForm from '../features/UserForm';
 import { IUser } from '../interfaces/IUser';
 import Pagination from '../components/Pagination';
@@ -38,54 +37,6 @@ const UserList: React.FC = () => {
     dispatch(fetchCollection());
   }, [dispatch]);
 
-  const deleteUser = (user: IUser.User) => {
-    axiosInstance
-      .delete(`/users/${user?.id}`)
-      .then(() => {
-        // loadUsers(users?.page ?? 1); Getting response 200 all API request but actually not reflected to the api so manually did it
-        // const filtered: IUser.User[] =
-        //   users?.data?.filter((iuser) => iuser.id !== user?.id) ?? [];
-        // setUsers({ ...users, users: filtered });
-        toastr('User has been deleted');
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const handleUserUpdate = useCallback(
-    (data: IUser.User) => {
-      axiosInstance
-        .post(`/user/${selectedUser?.id}`, data)
-        .then(() => {
-          // loadUsers(users?.page ?? 1);
-          // const filtered: IUser.User[] =
-          //   users?.data?.filter((user) => user.id !== selectedUser?.id) ?? [];
-          // setUsers({ ...users, users: filtered });
-          // setIsModalOpen(false);
-          toastr('User has been updated');
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
-    [selectedUser],
-  );
-
-  const filterUsers = (query: string) => {
-    // if (query.length <= 2) {
-    //   setUsers({ ...users, users: users?.data });
-    // } else {
-    //   const filtered: IUser.User[] =
-    //     users?.data?.filter(
-    //       (user) =>
-    //         user.first_name.toLowerCase().includes(query.toLowerCase()) ||
-    //         user.last_name.toLowerCase().includes(query.toLowerCase()),
-    //     ) ?? [];
-    //   setUsers({ ...users, users: filtered });
-    // }
-  };
-
   const toggleView = (mode: string) => {
     setView(mode);
   };
@@ -110,15 +61,11 @@ const UserList: React.FC = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <UserHead
-              filterUsers={filterUsers}
-              view={view}
-              toggleView={toggleView}
-            />
+            <UserHead view={view} toggleView={toggleView} />
             {view === 'table' ? (
               <UserTableSection users={users} />
             ) : (
-              <UserCardSection deleteAction={deleteUser} />
+              <UserCardSection />
             )}
             {users && users.length > 0 ? (
               <Flex justify="center" style={{ marginTop: '1rem' }}>

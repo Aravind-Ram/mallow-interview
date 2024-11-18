@@ -21,7 +21,7 @@ export namespace IUser {
 
   export interface UsersState {
     collection: Collection | null;
-    users: User[] | null;
+    users?: User[] | null;
     selectedUser: User | null;
     openModal: boolean;
     loading: boolean;

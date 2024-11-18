@@ -79,6 +79,26 @@ export const deleteUser = createAsyncThunk<IUser.User, IUser.User>(
   },
 );
 
+export const filterUsers = createAsyncThunk<
+  IUser.User[] | undefined,
+  string,
+  { state: RootState }
+>('users/filterUsers', async (query, thunkAPI) => {
+  const state = thunkAPI.getState();
+  const data = state.users.collection?.data;
+  if (!query) {
+    return data;
+  } else {
+    const filtered: IUser.User[] =
+      data?.filter(
+        (user) =>
+          user.first_name.toLowerCase().includes(query.toLowerCase()) ||
+          user.last_name.toLowerCase().includes(query.toLowerCase()),
+      ) ?? [];
+    return filtered;
+  }
+});
+
 // Create the users slice
 const usersSlice = createSlice({
   name: 'users',
@@ -191,6 +211,22 @@ const usersSlice = createSlice({
         },
       )
       .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Something went wrong';
+      });
+    builder
+      .addCase(filterUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        filterUsers.fulfilled,
+        (state, action: PayloadAction<IUser.User[] | undefined>) => {
+          state.loading = false;
+          state.users = action.payload;
+        },
+      )
+      .addCase(filterUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Something went wrong';
       });

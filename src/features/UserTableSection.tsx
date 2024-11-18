@@ -6,7 +6,7 @@ import { toggleEdit, deleteUser } from '../features/usersSlice';
 import { Avatar, Table } from 'antd';
 
 interface Prop {
-  users: IUser.User[] | null;
+  users?: IUser.User[] | null;
 }
 
 const UserTableSection: React.FC<Prop> = ({ users }) => {

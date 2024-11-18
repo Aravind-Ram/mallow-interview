@@ -1,7 +1,10 @@
 import { Input } from 'antd';
 import React, { useState, useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { filterUsers } from '../features/usersSlice';
 
-const Search: React.FC<{ handleFilter: any }> = ({ handleFilter }) => {
+const Search: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState(query);
 
@@ -17,7 +20,9 @@ const Search: React.FC<{ handleFilter: any }> = ({ handleFilter }) => {
 
   useEffect(() => {
     if (debouncedQuery) {
-      handleFilter(debouncedQuery);
+      dispatch(filterUsers(debouncedQuery));
+    } else {
+      dispatch(filterUsers('')); // Dispatch action to fetch all users when query is empty
     }
   }, [debouncedQuery]);
 

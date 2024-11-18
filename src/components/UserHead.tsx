@@ -6,19 +6,18 @@ import { toggleCreate } from '../features/usersSlice';
 import { useAppDispatch } from '../app/hooks';
 
 interface Prop {
-  filterUsers: any;
   view: string;
   toggleView: any;
 }
 
-const UserHead: React.FC<Prop> = ({ filterUsers, toggleView, view }) => {
+const UserHead: React.FC<Prop> = ({ toggleView, view }) => {
   const dispatch = useAppDispatch();
   return (
     <Flex align="space-between" vertical style={{ marginBottom: '1rem' }}>
       <Flex vertical={false} justify={'space-between'} align={'center'}>
         <Typography.Paragraph strong>Users</Typography.Paragraph>
         <Col>
-          <Search handleFilter={filterUsers} />
+          <Search />
           <Button
             type="primary"
             style={{ marginLeft: '1rem' }}
