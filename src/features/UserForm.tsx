@@ -2,6 +2,8 @@ import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Form, Input } from 'antd';
 import { IUser } from '../interfaces/IUser';
+import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { createUser, updateUser } from './usersSlice';
 
 type FieldType = {
   first_name?: string;
@@ -10,9 +12,13 @@ type FieldType = {
   avatar?: string;
 };
 
-const UserForm: React.FC<IUser.UserFormProps> = ({ user, handleAction }) => {
+const UserForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const { selectedUser } = useAppSelector((state) => state.users);
+
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    handleAction(values);
+    selectedUser ? dispatch(updateUser(values)) : dispatch(createUser(values));
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
@@ -25,10 +31,10 @@ const UserForm: React.FC<IUser.UserFormProps> = ({ user, handleAction }) => {
     <Form
       name="user"
       initialValues={{
-        first_name: user?.first_name,
-        last_name: user?.last_name,
-        email: user?.email,
-        avatar: user?.avatar,
+        first_name: selectedUser?.first_name,
+        last_name: selectedUser?.last_name,
+        email: selectedUser?.email,
+        avatar: selectedUser?.avatar,
       }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}

@@ -1,5 +1,4 @@
 export namespace IUser {
-  // Define the User type
   export interface User {
     id: number;
     first_name: string;
@@ -20,7 +19,6 @@ export namespace IUser {
     };
   }
 
-  // Define the slice's state
   export interface UsersState {
     collection: Collection | null;
     users: User[] | null;
@@ -30,29 +28,26 @@ export namespace IUser {
     error: string | null;
   }
 
+  export interface UserActionProps {
+    user: User | null;
+    handleAction: any;
+  }
+
+  export interface UserFormActionProps {
+    user: User | null;
+    handleAction: any;
+  }
+
   export interface authUser {
     email: string;
     password: string;
   }
 
-  export interface UserFormProps {
-    user: User | null;
-    handleAction: any;
-  }
-
-  export interface User {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    avatar: string;
-  }
-
   export interface CreateUser {
-    first_name: string;
-    last_name: string;
-    email: string;
-    avatar: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    avatar?: string;
   }
 
   export interface Pagination {

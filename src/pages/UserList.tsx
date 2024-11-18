@@ -11,7 +11,7 @@ import UserCardSection from '../features/UserCardSection';
 import UserTableSection from '../features/UserTableSection';
 import UserHead from '../components/UserHead';
 import { notification } from 'antd';
-import { fetchCollection, toggleEditOff } from '../features/usersSlice';
+import { fetchCollection, closeModal } from '../features/usersSlice';
 
 const Context = React.createContext({ name: 'Default' });
 
@@ -34,20 +34,9 @@ const UserList: React.FC = () => {
 
   const [view, setView] = useState<string>('table');
 
-  // const [users, setUsers] = useState<IUser.UserCollection>({});
-
-  // const [selectedUser, setSelectedUser] = useState<IUser.User | null>(null);
-
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-
   useEffect(() => {
     dispatch(fetchCollection());
   }, [dispatch]);
-
-  const editUser = (user: IUser.User) => {
-    // setSelectedUser(user);
-    // setIsModalOpen(true);
-  };
 
   const deleteUser = (user: IUser.User) => {
     axiosInstance
@@ -63,39 +52,6 @@ const UserList: React.FC = () => {
         console.error(err);
       });
   };
-
-  const loadUsers = useCallback((page: number) => {
-    axiosInstance
-      .get('/users?page=' + page)
-      .then((res) => {
-        // const userCollection = { ...res.data, users: res.data.data };
-        // setUsers(userCollection);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
-
-  const handleCancel = () => {
-    // setIsModalOpen(false);
-  };
-
-  const createUser = () => {
-    // setIsModalOpen(true);
-  };
-
-  const handleUserCreate = useCallback((data: IUser.User) => {
-    axiosInstance
-      .post('/auth/register', data)
-      .then(() => {
-        // loadUsers(users?.page ?? 1);
-        // setIsModalOpen(false);
-        // toastr('User has been created');
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
 
   const handleUserUpdate = useCallback(
     (data: IUser.User) => {
@@ -157,31 +113,23 @@ const UserList: React.FC = () => {
             <UserHead
               filterUsers={filterUsers}
               view={view}
-              createUser={createUser}
               toggleView={toggleView}
             />
             {view === 'table' ? (
-              <UserTableSection
-                collection={collection}
-                users={users}
-                editAction={editUser}
-                deleteAction={deleteUser}
-              />
+              <UserTableSection users={users} />
             ) : (
-              <UserCardSection
-                editAction={editUser}
-                deleteAction={deleteUser}
-              />
+              <UserCardSection deleteAction={deleteUser} />
             )}
             {users && users.length > 0 ? (
               <Flex justify="center" style={{ marginTop: '1rem' }}>
                 <Flex vertical={false} justify={'center'} align={'center'}>
-                  <Pagination
+                  <></>
+                  {/* <Pagination
                     perPage={collection?.per_page}
                     current={collection?.page}
                     total={collection?.total}
                     onPageSwitch={loadUsers}
-                  />
+                  /> */}
                 </Flex>
               </Flex>
             ) : (
@@ -193,12 +141,9 @@ const UserList: React.FC = () => {
           title={selectedUser ? 'Edit User' : 'Create User'}
           open={openModal}
           footer={null}
-          onCancel={() => dispatch(toggleEditOff())}
+          onCancel={() => dispatch(closeModal())}
         >
-          <UserForm
-            user={selectedUser}
-            handleAction={selectedUser ? handleUserUpdate : handleUserCreate}
-          />
+          <UserForm />
         </Modal>
       </Layout>
     </Context.Provider>

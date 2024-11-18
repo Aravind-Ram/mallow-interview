@@ -3,12 +3,10 @@ import React from 'react';
 import { IUser } from '../interfaces/IUser';
 import { useAppDispatch } from '../app/hooks';
 
-interface Prop {
-  user: IUser.User;
-  handleAction: any;
-}
-
-const EditAction: React.FC<Prop> = ({ user, handleAction }) => {
+const EditAction: React.FC<IUser.UserActionProps> = ({
+  user,
+  handleAction,
+}) => {
   const dispatch = useAppDispatch();
   return (
     <Button

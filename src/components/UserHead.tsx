@@ -2,20 +2,17 @@ import { Button, Col, Flex, Typography } from 'antd';
 import { TableOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import Search from './Search';
 import React from 'react';
+import { toggleCreate } from '../features/usersSlice';
+import { useAppDispatch } from '../app/hooks';
 
 interface Prop {
   filterUsers: any;
-  createUser: any;
   view: string;
   toggleView: any;
 }
 
-const UserHead: React.FC<Prop> = ({
-  filterUsers,
-  createUser,
-  toggleView,
-  view,
-}) => {
+const UserHead: React.FC<Prop> = ({ filterUsers, toggleView, view }) => {
+  const dispatch = useAppDispatch();
   return (
     <Flex align="space-between" vertical style={{ marginBottom: '1rem' }}>
       <Flex vertical={false} justify={'space-between'} align={'center'}>
@@ -25,7 +22,7 @@ const UserHead: React.FC<Prop> = ({
           <Button
             type="primary"
             style={{ marginLeft: '1rem' }}
-            onClick={createUser}
+            onClick={() => dispatch(toggleCreate())}
           >
             Create User
           </Button>

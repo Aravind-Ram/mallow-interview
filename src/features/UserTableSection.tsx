@@ -2,21 +2,14 @@ import React from 'react';
 import { IUser } from '../interfaces/IUser';
 import EditAction from '../components/EditAction';
 import DeleteAction from '../components/DeleteAction';
+import { toggleEdit, deleteUser } from '../features/usersSlice';
 import { Avatar, Table } from 'antd';
 
 interface Prop {
-  collection: IUser.Collection | null;
   users: IUser.User[] | null;
-  deleteAction: any;
-  editAction: any;
 }
 
-const UserTableSection: React.FC<Prop> = ({
-  collection,
-  users,
-  editAction,
-  deleteAction,
-}) => {
+const UserTableSection: React.FC<Prop> = ({ users }) => {
   const columns = [
     {
       title: 'Avatar',
@@ -49,8 +42,8 @@ const UserTableSection: React.FC<Prop> = ({
       key: 'action',
       render: (record: IUser.User) => (
         <>
-          <EditAction user={record} handleAction={editAction} />
-          <DeleteAction user={record} handleAction={deleteAction} />
+          <EditAction user={record} handleAction={toggleEdit} />
+          <DeleteAction user={record} handleAction={deleteUser} />
         </>
       ),
     },

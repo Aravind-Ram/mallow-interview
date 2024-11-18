@@ -9,11 +9,10 @@ const { Meta } = Card;
 
 interface Prop {
   user: IUser.User;
-  editAction: any;
   deleteAction: any;
 }
 
-const UserCard: React.FC<Prop> = ({ user, editAction, deleteAction }) => (
+const UserCard: React.FC<Prop> = ({ user, deleteAction }) => (
   <Card
     style={{ margin: '10px' }}
     cover={<img alt={user.first_name} src={user.avatar} />}
