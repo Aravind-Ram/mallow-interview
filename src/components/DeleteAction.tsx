@@ -20,7 +20,7 @@ const DeleteAction: React.FC<IUser.UserActionProps> = ({
       onConfirm={() =>
         dispatch(handleAction(user)).then((result: any) => {
           if (handleAction.fulfilled.match(result)) {
-            fetchCollection(collection?.page ?? null);
+            dispatch(fetchCollection(collection?.page ?? null));
           }
         })
       }

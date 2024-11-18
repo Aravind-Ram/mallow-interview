@@ -21,9 +21,17 @@ const UserForm: React.FC = () => {
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     if (selectedUser) {
-      dispatch(updateUser(values));
+      dispatch(updateUser(values)).then((result: any) => {
+        if (updateUser.fulfilled.match(result)) {
+          dispatch(fetchCollection(collection?.page ?? null));
+        }
+      });
     } else {
-      dispatch(createUser(values));
+      dispatch(createUser(values)).then((result: any) => {
+        if (createUser.fulfilled.match(result)) {
+          dispatch(fetchCollection(collection?.page ?? null));
+        }
+      });
     }
   };
 
