@@ -1,6 +1,6 @@
 import { theme, Layout, Flex, Modal } from 'antd';
 import { Content } from 'antd/es/layout/layout';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import AuthStatus from '../components/AuthStatus';
 import UserForm from '../features/UserForm';
