@@ -84,13 +84,13 @@ export const deleteUser = createAsyncThunk<IUser.User, IUser.User>(
 );
 
 export const filterUsers = createAsyncThunk<
-  IUser.User[] | undefined,
+  IUser.User[] | undefined | null,
   string,
   { state: RootState }
 >('users/filterUsers', async (query, thunkAPI) => {
   const state = thunkAPI.getState();
-  const data = state.users.collection?.data;
-  if (!query) {
+  const data = state.users.users;
+  if (!query || !data) {
     return data;
   } else {
     const filtered: IUser.User[] =
@@ -217,7 +217,7 @@ const usersSlice = createSlice({
         (state, action: PayloadAction<IUser.User>) => {
           state.loading = false;
           const filtered: IUser.User[] =
-            state.collection?.data?.filter(
+            state.users?.filter(
               (iuser) => iuser.email !== action.payload.email,
             ) ?? [];
           state.triggerNotification = 'User has been deleted';
@@ -235,7 +235,7 @@ const usersSlice = createSlice({
       })
       .addCase(
         filterUsers.fulfilled,
-        (state, action: PayloadAction<IUser.User[] | undefined>) => {
+        (state, action: PayloadAction<IUser.User[] | undefined | null>) => {
           state.loading = false;
           state.users = action.payload;
         },

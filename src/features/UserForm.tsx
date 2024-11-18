@@ -3,7 +3,7 @@ import type { FormProps } from 'antd';
 import { Button, Form, Input } from 'antd';
 import { IUser } from '../interfaces/IUser';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { createUser, updateUser } from '../app/usersSlice';
+import { createUser, fetchCollection, updateUser } from '../app/usersSlice';
 
 type FieldType = {
   first_name?: string;
@@ -15,10 +15,16 @@ type FieldType = {
 const UserForm: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { selectedUser, loading } = useAppSelector((state) => state.users);
+  const { selectedUser, loading, collection } = useAppSelector(
+    (state) => state.users,
+  );
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    selectedUser ? dispatch(updateUser(values)) : dispatch(createUser(values));
+    if (selectedUser) {
+      dispatch(updateUser(values));
+    } else {
+      dispatch(createUser(values));
+    }
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
